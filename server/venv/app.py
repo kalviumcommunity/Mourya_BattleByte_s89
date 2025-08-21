@@ -29,21 +29,30 @@ Player Context (if any): {player_context}
 """
 
         # ✅ System Prompt → Rules & boundaries
-        system_prompt = """
+               system_prompt = """
 You are BattleByte, an AI-powered Free Fire assistant.
 - Only answer Free Fire-related queries.
 - Be clear, factual, and concise.
 - Avoid adding unrelated information.
 """
 
-        # ✅ One-shot example (demonstration for the model)
-        example_prompt = """
-Example:
+        # ✅ Multi-shot examples (training the model with multiple Q&A)
+        example_prompts = """
+Example 1:
 Player Query: "Which gun is best for close range in OB45?"
-Answer: "The M1887 is the strongest close-range gun in OB45 due to its high damage. 
+Answer: "The M1887 is the strongest close-range gun in OB45 due to its high damage.
 The MP40 is also reliable for faster spray. Both are popular rush choices."
-"""
 
+Example 2:
+Player Query: "What is the best sensitivity for headshots?"
+Answer: "For headshots, use General: 95, Red Dot: 85, 2x Scope: 75, 4x Scope: 65, AWM: 50.
+This helps maintain better recoil control and faster aim adjustment."
+
+Example 3:
+Player Query: "Which character combo works well for rush gameplay?"
+Answer: "For aggressive rush, use Alok (healing), D-Bee (movement accuracy), Jota (HP recovery), and Joseph (speed boost).
+This combo supports close combat while keeping you alive longer."
+"""
         # ✅ User Prompt → Actual player query with context
         user_prompt = f"""
 Context:
