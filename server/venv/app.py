@@ -53,18 +53,21 @@ Player Query: "Which character combo works well for rush gameplay?"
 Answer: "For aggressive rush, use Alok (healing), D-Bee (movement accuracy), Jota (HP recovery), and Joseph (speed boost).
 This combo supports close combat while keeping you alive longer."
 """
-        # ✅ User Prompt → Actual player query with context
-        user_prompt = f"""
-Context:
-{rag_context}
+       # ✅ Dynamic prompt: adapt instructions based on player input/context
+        dynamic_prompt = f"""
+You are BattleByte, an AI-powered Free Fire assistant.
+- Answer the player query based on the RAG context above.
+- Tailor your answer according to the player's level: {player_level}.
+- Include event-specific advice if relevant: {current_event}.
+- Be clear, concise, and actionable.
+- Only answer Free Fire-related queries.
 
 Player Query:
 {query}
 """
 
         contents = [
-            types.Content(role="model", parts=[types.Part(text=system_prompt)]),  # System
-            types.Content(role="user", parts=[types.Part(text=user_prompt)])      # User
+            types.Content(role="user", parts=[types.Part(text=dynamic_prompt)])
         ]
 
         def generate():
