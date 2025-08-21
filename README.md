@@ -70,7 +70,4 @@ With **LLMs + RAG**, it delivers **smart, accurate, and context-aware answers** 
 📧 [mouryakadali5@gmail.com](mailto:mouryakadali5@gmail.com)
 🔗 [GitHub](https://github.com/mourya-s89)
 
----
-
-⚡ With BattleByte, every Free Fire match becomes smarter, faster, and more fun!
 
