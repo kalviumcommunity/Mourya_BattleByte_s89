@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)  # ✅ Enable CORS for all routes
+CORS(app)  # Enable CORS for all routes
 
 # Initialize Gemini client
 client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
@@ -20,6 +20,8 @@ def battlebyte():
         data = request.json
         query = data.get("query", "")
         player_context = data.get("player_context", "")
+        player_level = data.get("player_level", "Beginner")
+        current_event = data.get("current_event", "None")
 
         rag_context = f"""
 Game: Free Fire
@@ -29,45 +31,33 @@ Player Context (if any): {player_context}
 """
 
         # ✅ System Prompt → Rules & boundaries
-               system_prompt = """
+        system_prompt = """
 You are BattleByte, an AI-powered Free Fire assistant.
 - Only answer Free Fire-related queries.
 - Be clear, factual, and concise.
 - Avoid adding unrelated information.
 """
 
-        # ✅ Multi-shot examples (training the model with multiple Q&A)
-        example_prompts = """
-Example 1:
-Player Query: "Which gun is best for close range in OB45?"
-Answer: "The M1887 is the strongest close-range gun in OB45 due to its high damage.
-The MP40 is also reliable for faster spray. Both are popular rush choices."
+        # ✅ Chain-of-Thought instruction
+        chain_of_thought_prompt = f"""
+Task: Answer the player query using **Chain-of-Thought reasoning**.
+- Think step by step about the best answer.
+- Consider player level: {player_level}
+- Consider current event: {current_event}
+- Use the RAG context below for information.
+- Only provide actionable Free Fire advice.
+- Show your reasoning before giving the final answer.
 
-Example 2:
-Player Query: "What is the best sensitivity for headshots?"
-Answer: "For headshots, use General: 95, Red Dot: 85, 2x Scope: 75, 4x Scope: 65, AWM: 50.
-This helps maintain better recoil control and faster aim adjustment."
-
-Example 3:
-Player Query: "Which character combo works well for rush gameplay?"
-Answer: "For aggressive rush, use Alok (healing), D-Bee (movement accuracy), Jota (HP recovery), and Joseph (speed boost).
-This combo supports close combat while keeping you alive longer."
-"""
-       # ✅ Dynamic prompt: adapt instructions based on player input/context
-        dynamic_prompt = f"""
-You are BattleByte, an AI-powered Free Fire assistant.
-- Answer the player query based on the RAG context above.
-- Tailor your answer according to the player's level: {player_level}.
-- Include event-specific advice if relevant: {current_event}.
-- Be clear, concise, and actionable.
-- Only answer Free Fire-related queries.
+RAG Context:
+{rag_context}
 
 Player Query:
 {query}
 """
 
         contents = [
-            types.Content(role="user", parts=[types.Part(text=dynamic_prompt)])
+            types.Content(role="model", parts=[types.Part(text=system_prompt)]),  # System instructions
+            types.Content(role="user", parts=[types.Part(text=chain_of_thought_prompt)])  # User query with CoT
         ]
 
         def generate():
