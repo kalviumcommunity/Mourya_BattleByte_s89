@@ -7,6 +7,7 @@ With **LLMs + RAG**, it delivers **smart, accurate, and context-aware answers** 
 
 ## ✨ Key Features
 
+
 * 🎯 **Pro Sensitivity Recommender**
   Get tailored **headshot sensitivity & HUD setups** for different devices and play styles.
 
