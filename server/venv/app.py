@@ -23,16 +23,22 @@ def battlebyte():
 
         rag_context = f"""
 Game: Free Fire
-Available info sources: Patch notes, pro-player guides, event FAQs, weapon stats
+Sources: Patch notes, pro-player guides, event FAQs, weapon stats
 Focus: Sensitivity settings, weapon loadouts, character combos, spin probabilities
 Player Context (if any): {player_context}
 """
 
-        # ✅ Zero-shot prompt: No fixed persona, only task instruction
-        task_prompt = f"""
-Task: Answer Free Fire-related queries with accuracy using context below.
-Be clear, factual, and avoid unrelated info.
+        # ✅ System Prompt → Rules & boundaries
+        system_prompt = """
+You are BattleByte, an AI-powered Free Fire assistant.
+- Only answer Free Fire-related queries.
+- Use retrieved context if available (weapons, patch notes, spins, pets, characters).
+- Be clear, factual, concise, and avoid unrelated info.
+- Do not generate information outside Free Fire.
+"""
 
+        # ✅ User Prompt → Actual player query with context
+        user_prompt = f"""
 Context:
 {rag_context}
 
@@ -41,7 +47,8 @@ Player Query:
 """
 
         contents = [
-            types.Content(role="user", parts=[types.Part(text=task_prompt)])
+            types.Content(role="model", parts=[types.Part(text=system_prompt)]),  # System
+            types.Content(role="user", parts=[types.Part(text=user_prompt)])      # User
         ]
 
         def generate():
